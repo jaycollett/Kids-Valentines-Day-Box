@@ -4,7 +4,6 @@
 
 #define VS1053_RESET   -1     // VS1053 reset pin (not used!)
 
-
 #define CARDCS          5     // Card chip select pin
 #define VS1053_CS       6     // VS1053 chip select pin (output)
 #define VS1053_DREQ     9     // VS1053 Data request, ideally an Interrupt pin
@@ -15,8 +14,6 @@
 #define HEART_BLUE_LED 16     // Controls the bullseye in the top heart
 #define HEART_RED_LED1 18     // Controls one half of the top heart lobe
 #define HEART_RED_LED2 19     // Controls one half of the top heart lobe
-
-
 
 
 Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(VS1053_RESET, VS1053_CS, VS1053_DCS, VS1053_DREQ, CARDCS);
@@ -76,9 +73,6 @@ void loop() {
     runAnimation(getRandomAnimationValue());
   }
 
-
-  
-  
 //  // fade the leds around the box
 //  if(makeLEDBrighter){
 //     if(ledValue >= 255){
@@ -97,13 +91,12 @@ void loop() {
 //    }
 //  }
   
-
 }
 
 
 void runAnimation(int animationNumber){
 
-//  if(animationNumber == 1){
+  if(animationNumber == 1){
     // run the first of four animation sequences when a valentine is dropped in the box...
     if(musicPlayer.stopped()){
      musicPlayer.startPlayingFile("track001.mp3");
@@ -127,15 +120,25 @@ void runAnimation(int animationNumber){
       digitalWrite(BOX_LED_RIGHT, LOW);
       digitalWrite(HEART_BLUE_LED, LOW);
       delay(50);
-      digitalWrite(BOX_LED_LEFT, LOW);
-      digitalWrite(HEART_RED_LED1, LOW);
-      digitalWrite(HEART_RED_LED2, LOW);
-      digitalWrite(BOX_LED_RIGHT, LOW);
     }
-//  }
+    allLEDsOFF();
+  }else if(animationNumber == 2){
+  
+  }else if(animationNumber == 3){
+    
+  }else if(animationNumber == 4){
+    
+  }
   
 }
 
+void allLEDsOFF(){
+  digitalWrite(BOX_LED_LEFT, LOW);
+  digitalWrite(BOX_LED_RIGHT, LOW);
+  digitalWrite(HEART_RED_LED1, LOW);
+  digitalWrite(HEART_RED_LED2, LOW);
+  digitalWrite(HEART_BLUE_LED, LOW);
+}
 
 int getRandomAnimationValue(){
   // setup our randomizer to play a random song when the beam break is triggered
@@ -144,4 +147,13 @@ int getRandomAnimationValue(){
   int randomSeed2 = random(1,100);
   randomSeed(randomSeed1+randomSeed2);
   return random(1,5); // random number between 1 and 4 (5 excluded)
+}
+
+int getRandomTrackValue(){
+  // setup our randomizer to play a random song when the beam break is triggered
+  randomSeed(analogRead(A1));
+  int randomSeed1 = random(1,100);
+  int randomSeed2 = random(1,100);
+  randomSeed(randomSeed1+randomSeed2);
+  return random(1,21); // random number between 1 and 20 (21 excluded)
 }
