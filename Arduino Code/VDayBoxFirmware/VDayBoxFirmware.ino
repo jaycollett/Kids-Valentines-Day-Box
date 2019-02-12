@@ -32,6 +32,14 @@
 
 Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(VS1053_RESET, VS1053_CS, VS1053_DCS, VS1053_DREQ, CARDCS);
 
+char* music[] = { 
+  "/track001.mp3",
+  "/track002.mp3",
+  "/track003.mp3",
+  "/track004.mp3"
+};
+
+#define NUM_TRACKS (sizeof(music) / sizeof(char*))
 
 void setup() {
 
@@ -92,8 +100,10 @@ void loop() {
 
 void runAnimation(int animationNumber) {
 
-  if (musicPlayer.stopped()) {
-    musicPlayer.startPlayingFile("track001.mp3");
+  if (musicPlayer.stopped())
+  {
+    int trackNumber = random(0, NUM_TRACKS);
+    musicPlayer.startPlayingFile(music[trackNumber]);
   }
 
   Serial.print("Running animation number: ");
