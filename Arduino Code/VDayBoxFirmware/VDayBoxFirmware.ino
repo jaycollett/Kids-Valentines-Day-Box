@@ -1,9 +1,24 @@
+// *******************************************************************************
+//
+// Valentine's Day Box Firmware
+// A simple firmware to allow the Feather M0 to create an amazing expirence
+// for a kid's Valentine's day box.
+//
+// Written by Jay Collett (jay@jaycollett.com)
+// http://www.jaycollett.com
+// 
+// Additional libraries used:
+// VS1053 from Adafruit (www.adafruit.com)
+//
+// This code is licensed under the MIT license.
+//
+// *******************************************************************************
+
 #include <SPI.h>
 #include <SD.h>
 #include <Adafruit_VS1053.h>
 
 #define VS1053_RESET   -1     // VS1053 reset pin (not used!)
-
 #define CARDCS          5     // Card chip select pin
 #define VS1053_CS       6     // VS1053 chip select pin (output)
 #define VS1053_DREQ     9     // VS1053 Data request, ideally an Interrupt pin
@@ -15,20 +30,13 @@
 #define HEART_RED_LED1 18     // Controls one half of the top heart lobe
 #define HEART_RED_LED2 19     // Controls one half of the top heart lobe
 
-
 Adafruit_VS1053_FilePlayer musicPlayer = Adafruit_VS1053_FilePlayer(VS1053_RESET, VS1053_CS, VS1053_DCS, VS1053_DREQ, CARDCS);
 
-bool makeLEDBrighter = true;
-int ledValue = 0;
 
 void setup() {
 
   // put your setup code here, to run once:
   Serial.begin(115200);
-
-//  while (!Serial) {
-//    delay(1);
-//  }
   delay(500);
 
   if (! musicPlayer.begin()) { // initialise the music player
@@ -66,8 +74,8 @@ void setup() {
 
   // Beam break sensor setup (int pullup)
   pinMode(SENSOR_IN_PIN, INPUT_PULLUP);
-
 }
+
 
 void loop() {
 
@@ -79,25 +87,6 @@ void loop() {
       runAnimation(getRandomAnimationValue());
     }
   }
-
-  //  // fade the leds around the box
-  //  if(makeLEDBrighter){
-  //     if(ledValue >= 255){
-  //      makeLEDBrighter = false;
-  //    }else{
-  //      ledValue++;
-  //      analogWrite(LEDBLINK_PIN, ledValue);
-  //    }
-  //  }else{
-  //
-  //    if(ledValue <= 0){
-  //      makeLEDBrighter = true;
-  //    }else{
-  //      ledValue--;
-  //      analogWrite(LEDBLINK_PIN, ledValue);
-  //    }
-  //  }
-
 }
 
 
@@ -164,9 +153,47 @@ void runAnimation(int animationNumber) {
     }
     allLEDsOFF();
   } else if (animationNumber == 3) {
-
+    for (int i = 0; i <= 8; i++) {
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(70);
+      digitalWrite(HEART_RED_LED1, LOW);
+      digitalWrite(HEART_RED_LED2, HIGH);
+      digitalWrite(BOX_LED_LEFT, HIGH);
+      delay(60);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(BOX_LED_LEFT, LOW);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      delay(70);
+      digitalWrite(HEART_RED_LED2, LOW);
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(70);
+    }
+    allLEDsOFF();
   } else if (animationNumber == 4) {
-
+    for (int i = 0; i <= 5; i++) {
+      digitalWrite(BOX_LED_LEFT, HIGH);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      delay(50);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(70);
+      digitalWrite(HEART_RED_LED2, HIGH);
+      digitalWrite(BOX_LED_LEFT, LOW);
+      delay(50);
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(80);
+      digitalWrite(HEART_RED_LED2, LOW);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(60);
+    }
+    allLEDsOFF();
   }
 
 }
