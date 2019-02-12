@@ -22,22 +22,24 @@ bool makeLEDBrighter = true;
 int ledValue = 0;
 
 void setup() {
-  
+
   // put your setup code here, to run once:
   Serial.begin(115200);
 
-  while (!Serial) { delay(1); }
+//  while (!Serial) {
+//    delay(1);
+//  }
   delay(500);
-  
+
   if (! musicPlayer.begin()) { // initialise the music player
-     Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
-     while (1);
+    Serial.println(F("Couldn't find VS1053, do you have the right pins defined?"));
+    while (1);
   }
 
   Serial.println(F("VS1053 found"));
- 
+
   musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
-  
+
   if (!SD.begin(CARDCS)) {
     Serial.println(F("SD failed, or not present"));
     while (1);  // don't do anything more
@@ -45,7 +47,7 @@ void setup() {
   Serial.println("SD OK!");
 
   // Set volume for left, right channels. lower numbers == louder volume!
-  musicPlayer.setVolume(14,14);
+  musicPlayer.setVolume(14, 14);
   musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
 
   // Configure LED control pins as output
@@ -69,39 +71,48 @@ void setup() {
 
 void loop() {
 
-  if(digitalRead(SENSOR_IN_PIN) == LOW){
-    runAnimation(getRandomAnimationValue());
+  if (digitalRead(SENSOR_IN_PIN) == LOW) {
+    // very simple debounce-type feature, not too long here tho, cards can drop through this quickly...
+    delay(75);
+    if (digitalRead(SENSOR_IN_PIN) == LOW) {
+      Serial.println("Bean was broken, running LED animation.");
+      runAnimation(getRandomAnimationValue());
+    }
   }
 
-//  // fade the leds around the box
-//  if(makeLEDBrighter){
-//     if(ledValue >= 255){
-//      makeLEDBrighter = false;
-//    }else{
-//      ledValue++;
-//      analogWrite(LEDBLINK_PIN, ledValue);
-//    }
-//  }else{
-//    
-//    if(ledValue <= 0){
-//      makeLEDBrighter = true;
-//    }else{
-//      ledValue--;
-//      analogWrite(LEDBLINK_PIN, ledValue);
-//    }
-//  }
-  
+  //  // fade the leds around the box
+  //  if(makeLEDBrighter){
+  //     if(ledValue >= 255){
+  //      makeLEDBrighter = false;
+  //    }else{
+  //      ledValue++;
+  //      analogWrite(LEDBLINK_PIN, ledValue);
+  //    }
+  //  }else{
+  //
+  //    if(ledValue <= 0){
+  //      makeLEDBrighter = true;
+  //    }else{
+  //      ledValue--;
+  //      analogWrite(LEDBLINK_PIN, ledValue);
+  //    }
+  //  }
+
 }
 
 
-void runAnimation(int animationNumber){
+void runAnimation(int animationNumber) {
 
-  if(animationNumber == 1){
-    // run the first of four animation sequences when a valentine is dropped in the box...
-    if(musicPlayer.stopped()){
-     musicPlayer.startPlayingFile("track001.mp3");
-    }
-    for(int i = 0; i<=6;i++){
+  if (musicPlayer.stopped()) {
+    musicPlayer.startPlayingFile("track001.mp3");
+  }
+
+  Serial.print("Running animation number: ");
+  Serial.println(animationNumber);
+
+  // run the first of four animation sequences when a valentine is dropped in the box...
+  if (animationNumber == 1) {
+    for (int i = 0; i <= 6; i++) {
       digitalWrite(HEART_RED_LED1, HIGH);
       digitalWrite(HEART_RED_LED2, HIGH);
       digitalWrite(BOX_LED_LEFT, HIGH);
@@ -122,17 +133,45 @@ void runAnimation(int animationNumber){
       delay(50);
     }
     allLEDsOFF();
-  }else if(animationNumber == 2){
-  
-  }else if(animationNumber == 3){
-    
-  }else if(animationNumber == 4){
-    
+  } else if (animationNumber == 2) {
+    for (int i = 0; i <= 4; i++) {
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(HEART_RED_LED2, HIGH);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(60);
+      digitalWrite(BOX_LED_LEFT, HIGH);
+      delay(30);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      digitalWrite(HEART_RED_LED1, LOW);
+      delay(50);
+      digitalWrite(BOX_LED_LEFT, LOW);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      delay(50);
+      digitalWrite(HEART_RED_LED1, LOW);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(50);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_RED_LED2, LOW);
+      delay(50);
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(HEART_RED_LED2, HIGH);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(75);
+      digitalWrite(HEART_RED_LED1, LOW);
+      digitalWrite(HEART_RED_LED2, LOW);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(75);
+    }
+    allLEDsOFF();
+  } else if (animationNumber == 3) {
+
+  } else if (animationNumber == 4) {
+
   }
-  
+
 }
 
-void allLEDsOFF(){
+void allLEDsOFF() {
   digitalWrite(BOX_LED_LEFT, LOW);
   digitalWrite(BOX_LED_RIGHT, LOW);
   digitalWrite(HEART_RED_LED1, LOW);
@@ -140,20 +179,20 @@ void allLEDsOFF(){
   digitalWrite(HEART_BLUE_LED, LOW);
 }
 
-int getRandomAnimationValue(){
+int getRandomAnimationValue() {
   // setup our randomizer to play a random song when the beam break is triggered
   randomSeed(analogRead(A1));
-  int randomSeed1 = random(1,100);
-  int randomSeed2 = random(1,100);
-  randomSeed(randomSeed1+randomSeed2);
-  return random(1,5); // random number between 1 and 4 (5 excluded)
+  int randomSeed1 = random(1, 100);
+  int randomSeed2 = random(1, 100);
+  randomSeed(randomSeed1 + randomSeed2);
+  return random(1, 5); // random number between 1 and 4 (5 excluded)
 }
 
-int getRandomTrackValue(){
+int getRandomTrackValue() {
   // setup our randomizer to play a random song when the beam break is triggered
   randomSeed(analogRead(A1));
-  int randomSeed1 = random(1,100);
-  int randomSeed2 = random(1,100);
-  randomSeed(randomSeed1+randomSeed2);
-  return random(1,21); // random number between 1 and 20 (21 excluded)
+  int randomSeed1 = random(1, 100);
+  int randomSeed2 = random(1, 100);
+  randomSeed(randomSeed1 + randomSeed2);
+  return random(1, 21); // random number between 1 and 20 (21 excluded)
 }
