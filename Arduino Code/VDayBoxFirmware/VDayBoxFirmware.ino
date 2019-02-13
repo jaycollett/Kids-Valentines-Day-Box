@@ -254,8 +254,11 @@ void runAnimation(int animationNumber) {
         digitalWrite(HEART_BLUE_LED, LOW);
         delay(80);
         digitalWrite(BOX_LED_RIGHT, LOW);
+        digitalWrite(HEART_RED_LED1, HIGH);
         digitalWrite(HEART_RED_LED2, HIGH);
-        digitalWrite(HEART_RED_LED2, HIGH);
+        delay(50);
+        digitalWrite(HEART_RED_LED1, LOW);
+        digitalWrite(HEART_RED_LED2, LOW);
       }
       allLEDsOFF();
     }
