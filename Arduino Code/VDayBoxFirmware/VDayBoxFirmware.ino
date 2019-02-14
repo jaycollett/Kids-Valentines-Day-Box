@@ -1,3 +1,4 @@
+
 // *******************************************************************************
 //
 // Valentine's Day Box Firmware v1.0 (2/12/2019)
@@ -38,11 +39,11 @@ char* music[] = {
   "/track02.mp3", // Im afraid to look (Charlie Brown)...
   "/track03.mp3", // Chance to have a Valentime (Charlie Brown)...
   "/track04.mp3", // Happy Valentine's Day (Female Voice)...
-  "/track05.mp3", // Bon Jovi Give love a bad name...
+  "/track05.mp3", // Baby shark.....
   "/track06.mp3", // Lionel Richie Hello...
   "/track07.mp3", // Roxette It must have been love...
-  "/track08.mp3" // Elton John Can you feel the love...
-  
+  "/track08.mp3", // Elton John Can you feel the love...
+  "/track09.mp3"  // Poison I won't forget you...
 };
 #define NUM_TRACKS (sizeof(music) / sizeof(char*))
 
@@ -62,7 +63,7 @@ void setup() {
   }
 
   Serial.println(F("VS1053 found"));
-  delay(100);
+  delay(250);
 
   musicPlayer.sineTest(0x44, 500);    // Make a tone to indicate VS1053 is working
   delay(250);
@@ -74,7 +75,7 @@ void setup() {
   Serial.println("SD OK!");
 
   // Set volume for left, right channels. lower numbers == louder volume!
-  musicPlayer.setVolume(14, 14);
+  musicPlayer.setVolume(12, 12);
   musicPlayer.useInterrupt(VS1053_FILEPLAYER_PIN_INT);  // DREQ int
 
   // Configure LED control pins as output
@@ -120,7 +121,7 @@ void runAnimation(int animationNumber) {
 
   if (musicPlayer.stopped())
   {
-    int trackNumber = random(0, NUM_TRACKS);
+    int trackNumber = getRandomSoundTrackValue();
     Serial.print("Playing random track number: ");
     Serial.println(trackNumber);
     musicPlayer.startPlayingFile(music[trackNumber]);
@@ -131,7 +132,7 @@ void runAnimation(int animationNumber) {
 
   // run the first of four animation sequences when a valentine is dropped in the box...
   if (animationNumber == 1) {
-    for (int i = 0; i <= 6; i++) {
+    for (int i = 0; i <= 16; i++) {
       digitalWrite(HEART_RED_LED1, HIGH);
       digitalWrite(HEART_RED_LED2, HIGH);
       digitalWrite(BOX_LED_LEFT, HIGH);
@@ -153,7 +154,7 @@ void runAnimation(int animationNumber) {
     }
     allLEDsOFF();
   } else if (animationNumber == 2) {
-    for (int i = 0; i <= 4; i++) {
+    for (int i = 0; i <= 14; i++) {
       digitalWrite(HEART_RED_LED1, HIGH);
       digitalWrite(HEART_RED_LED2, HIGH);
       digitalWrite(HEART_BLUE_LED, HIGH);
@@ -183,7 +184,7 @@ void runAnimation(int animationNumber) {
     }
     allLEDsOFF();
   } else if (animationNumber == 3) {
-    for (int i = 0; i <= 8; i++) {
+    for (int i = 0; i <= 16; i++) {
       digitalWrite(HEART_RED_LED1, HIGH);
       digitalWrite(HEART_BLUE_LED, HIGH);
       delay(70);
@@ -204,7 +205,7 @@ void runAnimation(int animationNumber) {
     }
     allLEDsOFF();
   } else if (animationNumber == 4) {
-    for (int i = 0; i <= 5; i++) {
+    for (int i = 0; i <= 15; i++) {
       digitalWrite(BOX_LED_LEFT, HIGH);
       digitalWrite(BOX_LED_RIGHT, HIGH);
       delay(50);
@@ -222,74 +223,96 @@ void runAnimation(int animationNumber) {
       digitalWrite(BOX_LED_RIGHT, LOW);
       digitalWrite(HEART_BLUE_LED, HIGH);
       delay(60);
-    } else if (animationNumber == 5) {
-      for (int i = 0; i <= 4; i++) {
-        digitalWrite(HEART_BLUE_LED, HIGH);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, LOW);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, HIGH);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, LOW);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, HIGH);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, LOW);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, HIGH);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, LOW);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, HIGH);
-        delay(25);
-        digitalWrite(HEART_BLUE_LED, LOW);
-        delay(25);
-        digitalWrite(BOX_LED_RIGHT, HIGH);
-        delay(80);
-        digitalWrite(HEART_RED_LED2, LOW);
-        digitalWrite(BOX_LED_RIGHT, LOW);
-        digitalWrite(HEART_BLUE_LED, HIGH);
-        delay(60);
-        digitalWrite(BOX_LED_RIGHT, HIGH);
-        digitalWrite(HEART_BLUE_LED, LOW);
-        delay(80);
-        digitalWrite(BOX_LED_RIGHT, LOW);
-        digitalWrite(HEART_RED_LED1, HIGH);
-        digitalWrite(HEART_RED_LED2, HIGH);
-        delay(50);
-        digitalWrite(HEART_RED_LED1, LOW);
-        digitalWrite(HEART_RED_LED2, LOW);
-      }
-      allLEDsOFF();
     }
-
+    allLEDsOFF();
+  } else if (animationNumber == 5) {
+    for (int i = 0; i <= 10; i++) {
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      digitalWrite(BOX_LED_LEFT, HIGH);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      digitalWrite(BOX_LED_LEFT, LOW);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(25);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      delay(25);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(25);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      delay(80);
+      digitalWrite(HEART_RED_LED2, LOW);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_BLUE_LED, HIGH);
+      delay(60);
+      digitalWrite(BOX_LED_RIGHT, HIGH);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_BLUE_LED, LOW);
+      delay(80);
+      digitalWrite(BOX_LED_RIGHT, LOW);
+      digitalWrite(HEART_RED_LED1, HIGH);
+      digitalWrite(HEART_RED_LED2, HIGH);
+      delay(50);
+      digitalWrite(HEART_RED_LED1, LOW);
+      digitalWrite(HEART_RED_LED2, LOW);
+    }
+    allLEDsOFF();
   }
+}
 
-  //**************************************************************************************
-  //
-  // Method to ensure all LEDs are turned off, called by any animation routine
-  //
-  //**************************************************************************************
-  void allLEDsOFF() {
-    digitalWrite(BOX_LED_LEFT, LOW);
-    digitalWrite(BOX_LED_RIGHT, LOW);
-    digitalWrite(HEART_RED_LED1, LOW);
-    digitalWrite(HEART_RED_LED2, LOW);
-    digitalWrite(HEART_BLUE_LED, LOW);
-  }
+//**************************************************************************************
+//
+// Method to ensure all LEDs are turned off, called by any animation routine
+//
+//**************************************************************************************
+void allLEDsOFF() {
+  digitalWrite(BOX_LED_LEFT, LOW);
+  digitalWrite(BOX_LED_RIGHT, LOW);
+  digitalWrite(HEART_RED_LED1, LOW);
+  digitalWrite(HEART_RED_LED2, LOW);
+  digitalWrite(HEART_BLUE_LED, LOW);
+}
 
-  //**************************************************************************************
-  //
-  // Method used to get a random number from the number of available animations. This
-  // provides a more dynamic LED light show...
-  //
-  // RETURNS: INT value which is a random number between 1 and 4
-  //**************************************************************************************
-  int getRandomAnimationValue() {
-    // setup our randomizer to play a random song when the beam break is triggered
-    randomSeed(analogRead(A1));
-    int randomSeed1 = random(1, 100);
-    int randomSeed2 = random(1, 100);
-    randomSeed(randomSeed1 + randomSeed2);
-    return random(1, 6); // random number between 1 and 5 (6 excluded)
-  }
+//**************************************************************************************
+//
+// Method used to get a random number from the number of available animations. This
+// provides a more dynamic LED light show...
+//
+// RETURNS: INT value which is a random number between 1 and 4
+//**************************************************************************************
+int getRandomAnimationValue() {
+  randomSeed(analogRead(A1));
+  int randomSeed1 = random(1, 10000);
+  int randomSeed2 = random(1, 10000);
+  randomSeed(randomSeed1 + randomSeed2);
+  return random(1, 6); // random number between 1 and 5 (6 excluded)
+}
+
+//**************************************************************************************
+//
+// Method used to get a random number from the number of available tracks. This
+// provides a more dynamic playing of sound files...
+//
+// RETURNS: INT value which is a random number between 1 and NUM_TRACKS
+//**************************************************************************************
+int getRandomSoundTrackValue() {
+  // setup our randomizer to play a random song when the beam break is triggered
+  randomSeed(analogRead(A1));
+  int randomSeed1 = random(1, 10000);
+  int randomSeed2 = random(1, 10000);
+  randomSeed(randomSeed1 + randomSeed2);
+  return random(0, NUM_TRACKS); // random number between 0 and NUM_TRACKS
+}
